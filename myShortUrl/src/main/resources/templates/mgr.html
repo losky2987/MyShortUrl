@@ -1,22 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>MyShortUrl - MgrUI</title>
+    <title>MyShortUrl</title>
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <!--    <script src="/bootstrap/js/bootstrap.bundle.min.js" ></script>-->
 </head>
 <body>
-<div class="position-relative">
-    <p>Welcome! <span th:text="${username}">USER</span></p>
-</div>
-<hr>
-<div class="position-relative">
-    <button type="button">Create</button>
-    <button type="button">Select</button>
-    <button type="button">Remove</button>
-</div>
-<hr>
+<h1>MyShortUrl <span th:text="${version}"></span></h1>
 <div class="position-relative">
     <table class="table" style="table-layout: auto">
         <thead>
@@ -24,15 +15,24 @@
             <th>Remark</th>
             <th>Short Name</th>
             <th>Original Link</th>
-            <th>Visit Times</th>
+            <th>Operation</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="row : ${linksData}">
-            <td th:text="${row.remark}">Google</td>
-            <td th:text="${row.shortName}">google</td>
-            <td th:text="${row.originalLink}">https://google.com</td>
-            <td th:text="${row.visitTimes}">123567</td>
+            <td th:text="${row.remark()}"></td>
+            <td th:text="${row.shortName()}"></td>
+            <td><a th:href="${row.originalLink()}"><span th:text="${row.originalLink()}"></span></a></td>
+            <td>
+                <form th:action="@{/links/modify/{sn}(sn=${row.shortName()})}" method="post">
+                    <button type="submit" class="btn">modify</button>
+                </form>
+                <form th:action="@{/links/delete/{sn}(sn=${row.shortName()})}" method="post">
+                    <button type="submit" class="btn">delete</button>
+                </form>
+<!--                <p><a th:href="">modify</a></p>-->
+<!--                <p><a th:href="">delete</a></p>-->
+            </td>
         </tr>
         </tbody>
     </table>
@@ -41,7 +41,8 @@
 <hr>
 <div class="position-relative">
 <p>Copyrights 吾乡Losky © 2010-2024 ALL RIGHTS RESERVED.</p>
-    <p>This is an opensource project, use MIT license. See <a href="https://github.com/losky2987/MyShortUrl">Github Repo</a></p>
+<p>This is an opensource project, use MIT license. See <a href="https://github.com/losky2987/MyShortUrl">
+    <img src="https://github.com/favicon.ico" alt="Github Icon" width="30px" height="30px"></a></p>
 </div>
 </body>
 </html>

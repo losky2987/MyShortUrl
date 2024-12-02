@@ -1,41 +1,40 @@
 package losky2987.myshorturl.controller;
 
-import losky2987.myshorturl.db.mockList;
+import losky2987.myshorturl.db.LinkConvertColumn;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static losky2987.myshorturl.db.dumyLCC.getDumyLCC;
 
 @Controller
 public class MgrController {
-    List<mockList> muby = new ArrayList<>();
-
     @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("username", "mockuser");
+    public String index(Model model) throws Exception{
+        model.addAttribute("version", "0.0.0.3 Alpha");
+        List<LinkConvertColumn> dumy = getDumyLCC();
+        model.addAttribute("linksData", dumy);
+        model.addAttribute("numberOfLinks", dumy.size());
+        model.addAttribute("isMultipleLinks", dumy.size() == 1 ? "link" : "links");
+        return "mgr";
+    }
 
-        muby.add(new mockList("Google", "google", "https://google.com", 0));
-        muby.add(new mockList("Facebook", "facebook", "https://facebook.com", 0));
-        muby.add(new mockList("Twitter", "twitter", "https://twitter.com", 0));
-        muby.add(new mockList("Yahoo", "yahoo", "https://yahoo.com", 0));
-        muby.add(new mockList("Huawei", "huawei", "https://customer.huawei.com", 0));
-        muby.add(new mockList("Xiaomi", "xiaomi", "https://mi.com", 0));
-        muby.add(new mockList("QQ", "qqim", "https://im.qq.com", 0));
-        muby.add(new mockList("淘宝", "taobao", "https://taobao.com", 0));
+    @PostMapping("/links/modify/{sn}")
+    public String modifyLink(@PathVariable("sn") String sn, Model model) throws Exception{
+        System.out.println(sn + " modified");
+        model.addAttribute("toBeModified", sn);
+        return "redirect:/modify/" + sn;
+    }
 
-        model.addAttribute("linksData", muby);
-
-        model.addAttribute("numberOfLinks", muby.size());
-        if(model.getAttribute("numberOfLinks") instanceof  Integer) {
-            int numberOfLinks = (Integer)model.getAttribute("numberOfLinks");
-            if(numberOfLinks == 1) {
-                model.addAttribute("isMultipleLinks", "link");
-            }else{
-                model.addAttribute("isMultipleLinks", "links");
-            }
-        }
+    @PostMapping("/links/delete/{sn}")
+    public String deleteLink(@PathVariable("sn") String sn, Model model) throws Exception{
+        System.out.println(sn + " deleted");
+        model.addAttribute("toBeDeleted", sn);
         return "mgr";
     }
 }
